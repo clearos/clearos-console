@@ -1,6 +1,6 @@
 Name: clearos-console
-Version: 6.2.1
-Release: 2%{dist}
+Version: 7.0.0
+Release: 3%{dist}
 Summary: Administration console module
 License: GPLv3 or later
 Group: ClearOS/Core
@@ -10,7 +10,11 @@ Requires: clearos-base
 Requires: iptraf
 Requires: kbd
 Requires: tconsole
+%if "0%{dist}" == "0.v6"
 Requires: upstart
+%else
+Requires: systemd
+%endif
 BuildArch: noarch
 BuildRoot: %_tmppath/%name-%version-buildroot
 
@@ -22,13 +26,16 @@ Administration console module
 %build
 
 %install
+%if "0%{dist}" == "0.v6"
 mkdir -p -m 755 $RPM_BUILD_ROOT/etc/init
-mkdir -p -m 755 $RPM_BUILD_ROOT/usr/bin
-mkdir -p -m 755 $RPM_BUILD_ROOT/usr/sbin
-mkdir -p -m 755 $RPM_BUILD_ROOT/var/lib/clearconsole
-
-install -m 644 bash_profile $RPM_BUILD_ROOT/var/lib/clearconsole/.bash_profile
 install -m 644 clearos-console.conf $RPM_BUILD_ROOT/etc/init/
+%else
+mkdir -p -m 755 $RPM_BUILD_ROOT/etc/systemd/system/getty@tty1.service.d
+install -m 644 autologin.conf $RPM_BUILD_ROOT/etc/systemd/system/getty@tty1.service.d/
+%endif
+
+mkdir -p -m 755 $RPM_BUILD_ROOT/var/lib/clearconsole
+install -m 644 bash_profile $RPM_BUILD_ROOT/var/lib/clearconsole/.bash_profile
 
 %pre
 getent group clearconsole >/dev/null || groupadd -r clearconsole
@@ -93,11 +100,18 @@ exit 0
 
 %files
 %defattr(-,root,root)
+%if "0%{dist}" == "0.v6"
 %config(noreplace) /etc/init/clearos-console.conf
+%else
+/etc/systemd/system/getty@tty1.service.d
+%endif
 /var/lib/clearconsole/.bash_profile
 %dir %attr(-,clearconsole,root) /var/lib/clearconsole
 
 %changelog
+* Tue Aug 12 2014 ClearFoundation <developer@clearfoundaiton.com> 7.0.0-3
+- added systemd support
+
 * Mon Mar 19 2012 ClearFoundation <developer@clearfoundaiton.com> 6.2.1-2
 - changed init configuration to config(noreplace)
 
