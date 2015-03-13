@@ -1,6 +1,6 @@
 Name: clearos-console
 Version: 7.0.0
-Release: 3%{dist}
+Release: 4%{dist}
 Summary: Administration console module
 License: GPLv3 or later
 Group: ClearOS/Core
@@ -51,14 +51,20 @@ exit 0
 
 CHECK=`grep "^Cmnd_Alias CLEARCONSOLE =" /etc/sudoers`
 if [ -z "$CHECK" ]; then
-    echo "Cmnd_Alias CLEARCONSOLE = /usr/bin/iptraf, /usr/sbin/console_start, /usr/sbin/tc-yum, /bin/rpm, /sbin/halt, /sbin/reboot, /usr/sbin/app-passwd" >> /etc/sudoers
+    echo "Cmnd_Alias CLEARCONSOLE = /usr/bin/iptraf, /usr/sbin/console_start, /usr/sbin/tc-yum, /bin/rpm, /sbin/halt, /sbin/reboot, /usr/sbin/app-passwd, /usr/sbin/gconsole-setup" >> /etc/sudoers
 fi
-# FIXMEFIXME: changes required for Cmnd_Alias on an upgrade
 
 CHECK=`grep "^clearconsole[[:space:]]*" /etc/sudoers`
 if [ -z "$CHECK" ]; then
     echo "clearconsole ALL=NOPASSWD: CLEARCONSOLE" >> /etc/sudoers
 fi
+
+# Add new commands, e.g. /usr/sbin/gconsole-setup
+CHECK=`grep "^Cmnd_Alias CLEARCONSOLE =.*/usr/sbin/gconsole-setup" /etc/sudoers`
+if [ -z "$CHECK" ]; then
+    sed -i -e 's/^Cmnd_Alias CLEARCONSOLE =/Cmnd_Alias CLEARCONSOLE = \/usr\/sbin\/gconsole-setup,/' /etc/sudoers
+fi
+
 
 /usr/sbin/addsudo /sbin/halt clearos-console
 /usr/sbin/addsudo /sbin/reboot clearos-console
