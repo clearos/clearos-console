@@ -1,6 +1,6 @@
 Name: clearos-console
-Version: 7.0.0
-Release: 4%{dist}
+Version: 7.0.1
+Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
 Group: ClearOS/Core
