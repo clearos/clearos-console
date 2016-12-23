@@ -1,5 +1,5 @@
 Name: clearos-console
-Version: 7.0.3
+Version: 7.3.0
 Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
@@ -9,7 +9,8 @@ Vendor: ClearFoundation
 Requires: clearos-base
 Requires: iptraf
 Requires: kbd
-Requires: tconsole
+Requires: tconsole >= 3.2
+Requires: ethtool
 %if "0%{dist}" == "0.v6"
 Requires: upstart
 %else
@@ -64,7 +65,10 @@ CHECK=`grep "^Cmnd_Alias CLEARCONSOLE =.*/usr/sbin/gconsole-setup" /etc/sudoers`
 if [ -z "$CHECK" ]; then
     sed -i -e 's/^Cmnd_Alias CLEARCONSOLE =/Cmnd_Alias CLEARCONSOLE = \/usr\/sbin\/gconsole-setup,/' /etc/sudoers
 fi
-
+CHECK=`grep "^Cmnd_Alias CLEARCONSOLE =.*/sbin/ethtool" /etc/sudoers`
+if [ -z "$CHECK" ]; then
+    sed -i -e 's/^Cmnd_Alias CLEARCONSOLE =/Cmnd_Alias CLEARCONSOLE = \/sbin\/ethtool,/' /etc/sudoers
+fi
 
 /usr/sbin/addsudo /sbin/halt clearos-console
 /usr/sbin/addsudo /sbin/reboot clearos-console
