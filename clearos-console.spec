@@ -1,5 +1,5 @@
 Name: clearos-console
-Version: 7.3.0
+Version: 7.3.1
 Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
@@ -72,6 +72,12 @@ fi
 
 /usr/sbin/addsudo /sbin/halt clearos-console
 /usr/sbin/addsudo /sbin/reboot clearos-console
+
+# Avoid excessive loggin
+CHECK=`grep "^Defaults:clearconsole" /etc/sudoers`
+if [ -z "$CHECK" ]; then
+    echo "Defaults:clearconsole !syslog" >> /etc/sudoers
+fi
 
 # Remove old consoles
 #--------------------
