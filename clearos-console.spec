@@ -127,13 +127,3 @@ exit 0
 %endif
 /var/lib/clearconsole/.bash_profile
 %dir %attr(-,clearconsole,root) /var/lib/clearconsole
-
-%changelog
-* Tue Aug 12 2014 ClearFoundation <developer@clearfoundaiton.com> 7.0.0-3
-- added systemd support
-
-* Mon Mar 19 2012 ClearFoundation <developer@clearfoundaiton.com> 6.2.1-2
-- changed init configuration to config(noreplace)
-
-* Fri Jan 27 2012 ClearFoundation <developer@clearfoundation.com> 6.2.1-1
-- started changelog
