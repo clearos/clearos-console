@@ -1,5 +1,5 @@
 Name: clearos-console
-Version: 7.3.4
+Version: 7.4.0
 Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
@@ -11,11 +11,7 @@ Requires: iptraf
 Requires: kbd
 Requires: tconsole >= 3.3-8
 Requires: ethtool
-%if "0%{dist}" == "0.v6"
-Requires: upstart
-%else
 Requires: systemd
-%endif
 BuildArch: noarch
 BuildRoot: %_tmppath/%name-%version-buildroot
 
@@ -27,13 +23,8 @@ Administration console module
 %build
 
 %install
-%if "0%{dist}" == "0.v6"
-mkdir -p -m 755 $RPM_BUILD_ROOT/etc/init
-install -m 644 clearos-console.conf $RPM_BUILD_ROOT/etc/init/
-%else
 mkdir -p -m 755 $RPM_BUILD_ROOT/etc/systemd/system/getty@tty1.service.d
 install -m 644 autologin.conf $RPM_BUILD_ROOT/etc/systemd/system/getty@tty1.service.d/
-%endif
 
 mkdir -p -m 755 $RPM_BUILD_ROOT/var/lib/clearconsole
 install -m 644 bash_profile $RPM_BUILD_ROOT/var/lib/clearconsole/.bash_profile
@@ -103,6 +94,13 @@ if [ -n "$CHECK" ]; then
     sed -i -e 's/ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty\[2-6\]/' /etc/sysconfig/init
 fi
 
+# TODO tconsole should use new path.  Symlink for know.
+#------------------------------------------------------
+
+if [ ! -e /usr/sbin/iptraf ]; then
+    ln -sf /usr/sbin/iptraf-ng /usr/bin/iptraf
+fi
+
 exit 0
 
 %preun
@@ -120,10 +118,6 @@ exit 0
 
 %files
 %defattr(-,root,root)
-%if "0%{dist}" == "0.v6"
-%config(noreplace) /etc/init/clearos-console.conf
-%else
 /etc/systemd/system/getty@tty1.service.d
-%endif
 /var/lib/clearconsole/.bash_profile
 %dir %attr(-,clearconsole,root) /var/lib/clearconsole

@@ -1,13 +1,13 @@
 # Clear screen
 /usr/bin/clear
-
+ 
 # Graphical console pre-start hook
 if [ -x /usr/sbin/gconsole-setup ]; then
     sudo /usr/sbin/gconsole-setup
 fi
 
-# Make sure ClearOS API is available
-echo -n "Starting ClearOS API."
+# Make sure API is available
+echo -n "Starting API System."
 COUNTER=0
 while [  $COUNTER -lt 60 ]; do
     echo -n "."
