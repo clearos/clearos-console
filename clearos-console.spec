@@ -1,5 +1,5 @@
 Name: clearos-console
-Version: 7.4.0
+Version: 7.4.1
 Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
@@ -74,18 +74,6 @@ if [ -z "$CHECK" ]; then
     echo "Defaults:clearconsole !syslog" >> /etc/sudoers
 fi
 
-# Remove old consoles
-#--------------------
-
-CHECK=`grep "/usr/sbin/launcher" /etc/inittab 2>/dev/null`
-if [ -n "$CHECK" ]; then
-    grep -v "/usr/sbin/launcher" /etc/inittab > /etc/inittab.new
-    mv /etc/inittab.new /etc/inittab 
-    sleep 1
-    initctl reload-configuration >/dev/null 2>&1
-    killall -q launcher >/dev/null 2>&1
-fi
-
 # Install new console
 #--------------------
 
@@ -94,8 +82,8 @@ if [ -n "$CHECK" ]; then
     sed -i -e 's/ACTIVE_CONSOLES=\/dev\/tty\[1-6\]/ACTIVE_CONSOLES=\/dev\/tty\[2-6\]/' /etc/sysconfig/init
 fi
 
-# TODO tconsole should use new path.  Symlink for know.
-#------------------------------------------------------
+# TODO tconsole should use new path.  Symlink for now.
+#-----------------------------------------------------
 
 if [ ! -e /usr/sbin/iptraf ]; then
     ln -sf /usr/sbin/iptraf-ng /usr/bin/iptraf
