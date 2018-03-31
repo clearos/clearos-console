@@ -3,7 +3,7 @@ Version: 7.4.1
 Release: 1%{dist}
 Summary: Administration console module
 License: GPLv3 or later
-Group: ClearOS/Core
+Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
 Vendor: ClearFoundation
 Requires: clearos-base
@@ -13,7 +13,6 @@ Requires: tconsole >= 3.3-8
 Requires: ethtool
 Requires: systemd
 BuildArch: noarch
-BuildRoot: %_tmppath/%name-%version-buildroot
 
 %description
 Administration console module
